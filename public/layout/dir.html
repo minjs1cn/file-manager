@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<link rel="icon" href="/favicon.png" />
+		<title>{{title}}</title>
+		<style>
+			.files {
+				list-style: none;
+				padding: 0;
+			}
+
+			.files li {
+				padding: 0;
+			}
+
+			.files li a {
+				text-decoration: none;
+				color: #333;
+			}
+
+			.breadcrumb {
+				list-style: none;
+				padding: 0;
+			}
+
+			.breadcrumb li {
+				display: inline-block;
+			}
+			.breadcrumb span {
+				padding: 0 5px;
+			}
+			.breadcrumb a {
+				cursor: pointer;
+			}
+		</style>
+	</head>
+	<body>
+		<ul class="breadcrumb"></ul>
+		{{#each data}}
+		<ul class="files">
+			<li><a href="{{url}}">{{name}}</a></li>
+		</ul>
+		{{/each}}
+		<input id="fileupload" type="file" name="file" data-url="/api/upload" />
+		<div class="trigger">Trigger</div>
+		<div class="result"></div>
+		<div class="log"></div>
+		<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+		<script>
+			$('#fileupload').fileupload();
+		</script>
+		<script>
+			var pathname = location.pathname;
+			var array = pathname.split('/').filter(item => item !== '');
+
+			var res = [
+				{
+					name: 'root',
+					path: '/',
+				},
+			];
+
+			for (var i = 0; i < array.length; i++) {
+				if (i == 0) {
+					res.push({
+						name: array[i],
+						path: res[res.length - 1].path + array[i],
+					});
+				} else {
+					res.push({
+						name: array[i],
+						path: res[res.length - 1].path + '/' + array[i],
+					});
+				}
+			}
+
+			var lis = res
+				.map(
+					item => '<li><a href="' + item.path + '">' + item.name + '</a></li>',
+				)
+				.join('<span>\/</span>');
+
+			var breadcrumb = document.querySelector('.breadcrumb');
+			breadcrumb.innerHTML = lis;
+
+			// document.querySelector('.upload').innerHTML =
+			// 	document.getElementById('upload-tpl').innerHTML;
+		</script>
+	</body>
+</html>
