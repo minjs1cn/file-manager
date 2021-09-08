@@ -1,9 +1,21 @@
 import Koa from 'koa';
 import { port } from './config';
-import { dir, file } from './middwares';
+import { dir, file, upload } from './middwares';
+import koaBody from 'koa-body';
 
 const app = new Koa();
 
+app.use(
+	koaBody({
+		multipart: true,
+		formidable: {
+			maxFileSize: 500 * 1024 * 1024, // 设置上传文件大小最大限制，默认2M
+			uploadDir: 'upload',
+			keepExtensions: true,
+		},
+	}),
+);
+app.use(upload);
 app.use(file);
 app.use(dir);
 

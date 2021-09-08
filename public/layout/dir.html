@@ -35,23 +35,60 @@
 			.breadcrumb a {
 				cursor: pointer;
 			}
+			.a-upload {
+				position: fixed;
+				top: 10px;
+				right: 10px;
+				padding: 4px 10px;
+				height: 20px;
+				line-height: 20px;
+				cursor: pointer;
+				color: #888;
+				background: #fafafa;
+				border: 1px solid #ddd;
+				border-radius: 4px;
+				overflow: hidden;
+				display: inline-block;
+				*display: inline;
+				*zoom: 1;
+			}
+
+			.a-upload input {
+				position: absolute;
+				font-size: 100px;
+				right: 0;
+				top: 0;
+				opacity: 0;
+				filter: alpha(opacity=0);
+				cursor: pointer;
+			}
+
+			.a-upload:hover {
+				color: #444;
+				background: #eee;
+				border-color: #ccc;
+				text-decoration: none;
+			}
 		</style>
 	</head>
 	<body>
 		<ul class="breadcrumb"></ul>
+		<a href="javascript:;" class="a-upload">
+			<input
+				class="fileupload"
+				type="file"
+				name="file"
+				onchange="onUpload(this)"
+			/>
+			上传文件
+		</a>
+
 		{{#each data}}
 		<ul class="files">
 			<li><a href="{{url}}">{{name}}</a></li>
 		</ul>
 		{{/each}}
-		<input id="fileupload" type="file" name="file" data-url="/api/upload" />
-		<div class="trigger">Trigger</div>
-		<div class="result"></div>
-		<div class="log"></div>
 		<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-		<script>
-			$('#fileupload').fileupload();
-		</script>
 		<script>
 			var pathname = location.pathname;
 			var array = pathname.split('/').filter(item => item !== '');
@@ -86,8 +123,29 @@
 			var breadcrumb = document.querySelector('.breadcrumb');
 			breadcrumb.innerHTML = lis;
 
-			// document.querySelector('.upload').innerHTML =
-			// 	document.getElementById('upload-tpl').innerHTML;
+			// upload
+			function onUpload(target) {
+				console.log(target.files[0]);
+				const formData = new FormData();
+				formData.append('file', target.files[0]);
+				formData.append('root', res[res.length - 1].path);
+				console.log(formData);
+				$.ajax({
+					url: '/api/upload',
+					type: 'post',
+					data: formData,
+					cache: false,
+					processData: false,
+					contentType: false,
+					success: function (res) {
+						alert('upload success');
+						location.reload();
+					},
+					error: function (error) {
+						alert(error);
+					},
+				});
+			}
 		</script>
 	</body>
 </html>
