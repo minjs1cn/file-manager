@@ -125,11 +125,10 @@
 
 			// upload
 			function onUpload(target) {
-				console.log(target.files[0]);
 				const formData = new FormData();
 				formData.append('file', target.files[0]);
 				formData.append('root', res[res.length - 1].path);
-				console.log(formData);
+
 				$.ajax({
 					url: '/api/upload',
 					type: 'post',

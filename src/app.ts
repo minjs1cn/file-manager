@@ -1,6 +1,6 @@
 import Koa from 'koa';
 import { port } from './config';
-import { dir, file, upload } from './middwares';
+import { auth, dir, file, login, upload } from './middwares';
 import koaBody from 'koa-body';
 
 const app = new Koa();
@@ -15,6 +15,8 @@ app.use(
 		},
 	}),
 );
+app.use(login);
+app.use(auth);
 app.use(upload);
 app.use(file);
 app.use(dir);
