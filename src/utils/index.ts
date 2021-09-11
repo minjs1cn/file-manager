@@ -62,3 +62,28 @@ export function isFresh(stats: fs.Stats, ctx: Context) {
 
 	return true;
 }
+
+export function isDir(ext: string) {
+	return ext === '';
+}
+
+export function isJavascript(ext: string) {
+	return ext === '.js' || ext === '.html' || ext === '.ts';
+}
+
+export function isImage(ext: string) {
+	return ext === '.png' || ext === '.jpg' || ext === '.jpeg';
+}
+
+export function mapFileType(ext: string) {
+	let isFile = isDir(ext) === false;
+	let isJs = isFile && isJavascript(ext);
+	let isPic = isFile && isImage(ext);
+	let isOther = isFile && !isJs && !isPic;
+	return {
+		isFile,
+		isJs,
+		isPic,
+		isOther,
+	};
+}

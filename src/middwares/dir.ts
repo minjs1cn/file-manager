@@ -2,6 +2,7 @@ import { Context, Next } from 'koa';
 import path from 'path';
 import fs from 'fs';
 import { ROOT, template } from '../config';
+import { mapFileType } from '../utils';
 
 export const dir = async (ctx: Context, next: Next) => {
 	const filepath = path.join(ROOT, ctx.path);
@@ -20,11 +21,27 @@ export const dir = async (ctx: Context, next: Next) => {
 		const data: {
 			name: string;
 			url: string;
+			isDir: boolean;
+			isJavascript: boolean;
+			isImage: boolean;
+			other: boolean;
 		}[] = [];
+
+		let url = '';
+		let ext = '';
+
 		dirs.forEach(file => {
+			url = ctx.path.endsWith('/') ? ctx.path + file : ctx.path + '/' + file;
+			ext = path.extname(url);
+			let { isPic, isJs, isOther, isFile } = mapFileType(ext);
+
 			data.push({
 				name: file,
-				url: ctx.path.endsWith('/') ? ctx.path + file : ctx.path + '/' + file,
+				url,
+				isDir: !isFile,
+				isJavascript: isJs,
+				isImage: isPic,
+				other: isOther,
 			});
 		});
 
